@@ -165,23 +165,14 @@ export function applyRedaction(
     const rawValue = sourceText.slice(finding.start, finding.end);
 
     let replacement = DEFAULT_CUSTOM_MASK;
-    let actionSummary =
-      finding.validationStatus === 'luhn_failed'
-        ? `Possible candidate · Full mask (${DEFAULT_CUSTOM_MASK})`
-        : `Full mask (${DEFAULT_CUSTOM_MASK})`;
+    let actionLabel = `Full mask (${DEFAULT_CUSTOM_MASK})`;
 
     if (mode === 'custom') {
       replacement = safeCustomMask;
-      actionSummary =
-        finding.validationStatus === 'luhn_failed'
-          ? `Possible candidate · Custom (${safeCustomMask})`
-          : `Custom (${safeCustomMask})`;
+      actionLabel = `Custom (${safeCustomMask})`;
     } else if (mode === 'partial') {
       replacement = partialMaskValue(finding.category, rawValue, partialMaskChar);
-      actionSummary =
-        finding.validationStatus === 'luhn_failed'
-          ? `Possible candidate · Partial mask (${replacement})`
-          : `Partial mask (${replacement})`;
+      actionLabel = `Partial mask (${replacement})`;
     } else if (mode === 'pseudonym') {
       let token = pseudonymMap.get(finding.canonicalKey);
       if (!token) {
@@ -194,11 +185,13 @@ export function applyRedaction(
         pseudonymMap.set(finding.canonicalKey, token);
       }
       replacement = token;
-      actionSummary =
-        finding.validationStatus === 'luhn_failed'
-          ? `Possible candidate · Pseudonym (${token})`
-          : `Pseudonym (${token})`;
+      actionLabel = `Pseudonym (${token})`;
     }
+
+    const actionSummary =
+      finding.validationStatus === 'luhn_failed'
+        ? `Possible candidate · ${actionLabel}`
+        : actionLabel;
 
     const sanitizedStart = output.length;
     output += replacement;

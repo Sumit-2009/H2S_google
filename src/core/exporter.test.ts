@@ -19,8 +19,24 @@ describe('exporter', () => {
     expect(prep.columnCount).toBe(8);
     expect(prep.neutralizedCount).toBe(1);
     expect(prep.csvContent).toContain("'=SUM(A1:A2) formula test");
-    // Ordinary safe cells remain intact
     expect(prep.csvContent).toContain('CASE-101,Aarav Kulkarni,[EMAIL_1]');
+  });
+
+  it('neutralizes whitespace-prefixed formula triggers while leaving safe whitespace cells untouched', () => {
+    const trickyCsv = [
+      'col1,col2,col3',
+      '" =SUM(A1:A2)","\t+1+1","  safe text"',
+      '"\n-CMD()","@HYPERLINK()",',
+    ].join('\n');
+
+    const prep = prepareSafeCsvExport(trickyCsv);
+    expect(prep.validStructure).toBe(true);
+    expect(prep.neutralizedCount).toBe(4);
+    expect(prep.csvContent).toContain(`' =SUM(A1:A2)`);
+    expect(prep.csvContent).toContain(`'\t+1+1`);
+    expect(prep.csvContent).toContain(`"'\n-CMD()"`);
+    expect(prep.csvContent).toContain(`'@HYPERLINK()`);
+    expect(prep.csvContent).toContain(`,  safe text`);
   });
 
   it('builds safe descriptive filenames and PII-free summary reports', () => {
@@ -51,4 +67,3 @@ describe('exporter', () => {
     expect(report).not.toContain('4532-0151-1283-0366');
   });
 });
-

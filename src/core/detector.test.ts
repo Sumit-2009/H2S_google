@@ -156,5 +156,7 @@ describe('detectPiiEntities', () => {
       '+1 (415) 555-0192',
       '+44 20 7946 0958',
     ]);
+    const usPhone = findings.find((f) => f.category === 'INTL_PHONE');
+    expect(usPhone?.safeLabel).toBe('••••••0192');
   });
 });

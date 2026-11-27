@@ -2,7 +2,8 @@ import { CATEGORY_META, CATEGORY_ORDER } from './categories';
 import { parseCsvDocument } from './csv';
 import type { DetectionSummary, DocumentMeta, RedactedSpan, RedactionMode } from './types';
 
-const FORMULA_TRIGGER_RE = /^[=+\-@\t\r]/;
+// Neutralizes direct or whitespace-prefixed spreadsheet formula triggers (=, +, -, @, tab, CR)
+const FORMULA_TRIGGER_RE = /^[ \t\r\n]*[=+\-@]|^[\t\r]/;
 
 export interface CsvExportPrep {
   csvContent: string;

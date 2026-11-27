@@ -84,6 +84,19 @@ export function parseCsvDocument(text: string): CsvParseResult {
   let justClosedQuote = false;
   let lineNumber = 1;
 
+  const commitField = () => {
+    currentRow.push(currentField);
+    currentField = '';
+    fieldStartedQuoted = false;
+    justClosedQuote = false;
+  };
+
+  const commitRow = () => {
+    commitField();
+    rows.push(currentRow);
+    currentRow = [];
+  };
+
   for (let i = 0; i < text.length; i++) {
     const ch = text[i];
 
@@ -105,30 +118,12 @@ export function parseCsvDocument(text: string): CsvParseResult {
 
     if (justClosedQuote) {
       if (ch === delimiter) {
-        currentRow.push(currentField);
-        currentField = '';
-        fieldStartedQuoted = false;
-        justClosedQuote = false;
+        commitField();
         continue;
       }
-      if (ch === '\r' && text[i + 1] === '\n') {
-        currentRow.push(currentField);
-        rows.push(currentRow);
-        currentRow = [];
-        currentField = '';
-        fieldStartedQuoted = false;
-        justClosedQuote = false;
-        lineNumber++;
-        i++;
-        continue;
-      }
-      if (ch === '\n' || ch === '\r') {
-        currentRow.push(currentField);
-        rows.push(currentRow);
-        currentRow = [];
-        currentField = '';
-        fieldStartedQuoted = false;
-        justClosedQuote = false;
+      if (ch === '\r' || ch === '\n') {
+        if (ch === '\r' && text[i + 1] === '\n') i++;
+        commitRow();
         lineNumber++;
         continue;
       }
@@ -151,29 +146,13 @@ export function parseCsvDocument(text: string): CsvParseResult {
     }
 
     if (ch === delimiter) {
-      currentRow.push(currentField);
-      currentField = '';
-      fieldStartedQuoted = false;
+      commitField();
       continue;
     }
 
-    if (ch === '\r' && text[i + 1] === '\n') {
-      currentRow.push(currentField);
-      rows.push(currentRow);
-      currentRow = [];
-      currentField = '';
-      fieldStartedQuoted = false;
-      lineNumber++;
-      i++;
-      continue;
-    }
-
-    if (ch === '\n' || ch === '\r') {
-      currentRow.push(currentField);
-      rows.push(currentRow);
-      currentRow = [];
-      currentField = '';
-      fieldStartedQuoted = false;
+    if (ch === '\r' || ch === '\n') {
+      if (ch === '\r' && text[i + 1] === '\n') i++;
+      commitRow();
       lineNumber++;
       continue;
     }
@@ -185,10 +164,8 @@ export function parseCsvDocument(text: string): CsvParseResult {
     issues.push(`Line ${lineNumber}: unclosed double-quoted field at end of file.`);
   }
 
-  // Push trailing field/row unless file ended cleanly right after a newline
   if (currentField.length > 0 || currentRow.length > 0 || justClosedQuote) {
-    currentRow.push(currentField);
-    rows.push(currentRow);
+    commitRow();
   }
 
   const expectedColumns = rows[0]?.length ?? 0;
@@ -218,4 +195,3 @@ export function parseCsvDocument(text: string): CsvParseResult {
     issues,
   };
 }
-

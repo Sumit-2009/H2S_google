@@ -203,9 +203,8 @@ export function createSafeLabel(category: EntityCategory, raw: string): string {
     }
     case 'INTL_PHONE': {
       const digits = raw.replace(/\D/g, '');
-      const cc = digits.slice(0, 2);
       const last4 = digits.slice(-4);
-      return `+${cc} •••••${last4}`;
+      return `••••••${last4}`;
     }
     case 'IPV4': {
       const parts = raw.split('.');

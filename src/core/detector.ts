@@ -213,6 +213,22 @@ function collectPanCandidates(text: string): CandidateFinding[] {
   return results;
 }
 
+function isAdjacentToFourDigitGroup(
+  text: string,
+  start: number,
+  end: number,
+  sep: string,
+  trailingDigitRange: string
+): boolean {
+  const before = text.slice(Math.max(0, start - 5), start);
+  const after = text.slice(end, end + 6);
+  const sepEsc = sep === '-' ? '-' : '\\s';
+  return (
+    new RegExp(`\\d{4}${sepEsc}$`).test(before) ||
+    new RegExp(`^${sepEsc}\\d{${trailingDigitRange}}(?!\\d)`).test(after)
+  );
+}
+
 function collectAadhaarCandidates(
   text: string,
   rejected: RejectedCandidate[],
@@ -230,14 +246,8 @@ function collectAadhaarCandidates(
     const sepMatch = raw.match(/[\s-]/g);
     if (sepMatch && sepMatch.length === 1) continue;
     if (sepMatch && sepMatch.length === 2 && sepMatch[0] !== sepMatch[1]) continue;
-
-    if (sepMatch && sepMatch.length === 2) {
-      const sep = sepMatch[0];
-      const before = text.slice(Math.max(0, start - 5), start);
-      const after = text.slice(end, end + 5);
-      const sepEsc = sep === '-' ? '-' : '\\s';
-      if (new RegExp(`\\d{4}${sepEsc}$`).test(before)) continue;
-      if (new RegExp(`^${sepEsc}\\d{3,4}(?!\\d)`).test(after)) continue;
+    if (sepMatch && sepMatch.length === 2 && isAdjacentToFourDigitGroup(text, start, end, sepMatch[0], '3,4')) {
+      continue;
     }
     if (reservedCardSpans.some((c) => start < c.end && end > c.start)) continue;
 
@@ -307,13 +317,8 @@ function collectPaymentCardCandidates(
       seenSpans.add(spanKey);
 
       const sepMatch = raw.match(/[\s-]/);
-      if (sepMatch) {
-        const sep = sepMatch[0];
-        const before = text.slice(Math.max(0, start - 5), start);
-        const after = text.slice(end, end + 6);
-        const sepEsc = sep === '-' ? '-' : '\\s';
-        if (new RegExp(`\\d{4}${sepEsc}$`).test(before)) continue;
-        if (new RegExp(`^${sepEsc}\\d{4}(?!\\d)`).test(after)) continue;
+      if (sepMatch && isAdjacentToFourDigitGroup(text, start, end, sepMatch[0], '4')) {
+        continue;
       }
 
       const digits = raw.replace(/\D/g, '');
