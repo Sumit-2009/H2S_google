@@ -1,0 +1,140 @@
+:root {
+  /* Apple-inspired Typography (max 2 families: system SF/sans + IBM Plex Mono) */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  /* 4/8px Spacing Scale */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+
+  /* Restrained Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+
+  /* Light Mode — Pure white & soft off-white */
+  --bg-canvas: #F5F5F7;
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #F9F9FB;
+  --bg-hover: #EFEFF2;
+  --bg-segmented: #E8E8ED;
+
+  --border-subtle: #E2E2E7;
+  --border-strong: #C7C7CC;
+
+  --ink-primary: #1D1D1F;
+  --ink-secondary: #515154;
+  --ink-muted: #6E6E73;
+
+  /* Primary Interactive Accent: Apple Blue */
+  --accent: #0071E3;
+  --accent-hover: #0066CC;
+  --accent-ink: #FFFFFF;
+  --accent-tint: rgba(0, 113, 227, 0.1);
+
+  /* Semantic Status Colors */
+  --status-ok: #1E7E34;
+  --status-ok-bg: rgba(30, 126, 52, 0.1);
+  --status-warn: #A14E00;
+  --status-warn-bg: rgba(178, 80, 0, 0.11);
+  --status-err: #C41E22;
+  --status-err-bg: rgba(215, 0, 21, 0.1);
+
+  /* Category Highlight Tints (subtle, WCAG AA readable) */
+  --cat-email: #005EC4;
+  --cat-email-bg: rgba(0, 113, 227, 0.12);
+  --cat-phone: #1B7A43;
+  --cat-phone-bg: rgba(36, 138, 61, 0.12);
+  --cat-intl: #0F6E7A;
+  --cat-intl-bg: rgba(15, 110, 122, 0.12);
+  --cat-ipv4: #5E43B8;
+  --cat-ipv4-bg: rgba(94, 67, 184, 0.12);
+  --cat-ipv6: #444CA6;
+  --cat-ipv6-bg: rgba(68, 76, 166, 0.12);
+  --cat-pan: #994D00;
+  --cat-pan-bg: rgba(178, 80, 0, 0.12);
+  --cat-aadhaar: #8B3472;
+  --cat-aadhaar-bg: rgba(139, 52, 114, 0.12);
+  --cat-card: #B21A24;
+  --cat-card-bg: rgba(215, 0, 21, 0.11);
+
+  --redaction-bg: #1D1D1F;
+  --redaction-ink: #FFFFFF;
+  --focus-ring: #0071E3;
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 6px 18px rgba(0, 0, 0, 0.04);
+  --shadow-popover: 0 8px 28px rgba(0, 0, 0, 0.12);
+  --transition-fast: 150ms cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+[data-theme='dark'] {
+  --bg-canvas: #161618;
+  --bg-surface: #1F1F22;
+  --bg-subtle: #27272B;
+  --bg-hover: #303036;
+  --bg-segmented: #2C2C31;
+
+  --border-subtle: #35353B;
+  --border-strong: #4A4A52;
+
+  --ink-primary: #F5F5F7;
+  --ink-secondary: #C4C4C9;
+  --ink-muted: #98989F;
+
+  --accent: #0A84FF;
+  --accent-hover: #3399FF;
+  --accent-ink: #FFFFFF;
+  --accent-tint: rgba(10, 132, 255, 0.16);
+
+  --status-ok: #30D158;
+  --status-ok-bg: rgba(48, 209, 88, 0.14);
+  --status-warn: #FF9F0A;
+  --status-warn-bg: rgba(255, 159, 10, 0.15);
+  --status-err: #FF453A;
+  --status-err-bg: rgba(255, 69, 58, 0.15);
+
+  --cat-email: #5AC8FA;
+  --cat-email-bg: rgba(10, 132, 255, 0.2);
+  --cat-phone: #4CD964;
+  --cat-phone-bg: rgba(48, 209, 88, 0.18);
+  --cat-intl: #64D2FF;
+  --cat-intl-bg: rgba(100, 210, 255, 0.18);
+  --cat-ipv4: #BF9EFF;
+  --cat-ipv4-bg: rgba(191, 158, 255, 0.18);
+  --cat-ipv6: #8E9BFF;
+  --cat-ipv6-bg: rgba(142, 155, 255, 0.18);
+  --cat-pan: #FFB340;
+  --cat-pan-bg: rgba(255, 159, 10, 0.2);
+  --cat-aadhaar: #FF79C6;
+  --cat-aadhaar-bg: rgba(255, 121, 198, 0.18);
+  --cat-card: #FF6961;
+  --cat-card-bg: rgba(255, 69, 58, 0.2);
+
+  --redaction-bg: #F5F5F7;
+  --redaction-ink: #161618;
+  --focus-ring: #0A84FF;
+
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-popover: 0 12px 32px rgba(0, 0, 0, 0.48);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0ms;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
